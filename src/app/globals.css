@@ -1,1 +1,424 @@
 @import "tailwindcss";
+
+/* STYLES.md §1.1 — Palette canonique RENTX — 1000% fidèle */
+:root {
+  /* Couleurs globales Elementor Kit 11 */
+  --e-global-color-primary: #FF0000;
+  --e-global-color-secondary: #000811;
+  --e-global-color-text: #181818;
+  --e-global-color-accent: #FF8414;
+  --e-global-color-b4c3f3a: #FFF5ED;
+  --e-global-color-a3006c7: #025466;
+  --e-global-color-5f4d2bb: #FFFFFF;
+  --e-global-color-40bcc65: #000000;
+  --e-global-color-0a33e2d: #FFEFE1;
+  --e-global-color-837ff2c: #FFFFFF1F;
+  --e-global-color-eb20315: #FFFFFF00;
+
+  /* Typographies §2.2 — tailles fixes */
+  --e-global-typography-959a6ef-size: 68px;
+  --e-global-typography-959a6ef-weight: 800;
+  --e-global-typography-959a6ef-lh: 1.1em;
+  --e-global-typography-8533622-size: 60px;
+  --e-global-typography-8533622-weight: 700;
+  --e-global-typography-e0f81a1-size: 46px;
+  --e-global-typography-e0f81a1-weight: 700;
+  --e-global-typography-e0f81a1-lh: 1.1em;
+  --e-global-typography-289ece5-size: 36px;
+  --e-global-typography-2dab3c3-size: 24px;
+  --e-global-typography-d7d20cc-size: 18px;
+  --e-global-typography-e768d2b-size: 14px;
+  --e-global-typography-text-size: 16px;
+
+  /* Layout §3.1 */
+  --container-max-width: 1280px;
+  --kit-widget-spacing: 20px;
+  --widgets-spacing: 20px 20px;
+
+  /* Radius & Shadows §5 */
+  --radius-pill: 50px;
+  --radius-card: 15px;
+  --radius-submenu: 6px;
+  --shadow-submenu: 0px 0px 30px 0px rgba(0,0,0,0.05);
+  --shadow-card: 0px 0px 30px 0px rgba(0,0,0,0.15);
+  --shadow-card-soft: 9.899px 9.899px 30px 0 rgba(0,0,0,0.1);
+}
+
+/* STYLES.md §6.1 — Tailwind theme bridge (Tailwind v4) — mapping exact */
+@theme {
+  --color-accent: var(--e-global-color-accent);
+  --color-petrol: var(--e-global-color-a3006c7);
+  --color-dark: var(--e-global-color-secondary);
+  --color-text: var(--e-global-color-text);
+  --color-cream: var(--e-global-color-b4c3f3a);
+  --color-peach: var(--e-global-color-0a33e2d);
+  --color-white: var(--e-global-color-5f4d2bb);
+  --radius-pill: 50px;
+  --radius-card: 15px;
+}
+
+/* STYLES.md §2 — Reset Elementor core */
+*,
+*::before,
+*::after {
+  box-sizing: border-box;
+}
+
+html {
+  scroll-behavior: smooth;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+  text-rendering: auto;
+  max-width: 100%;
+  overflow-x: clip;
+}
+
+body {
+  color: var(--e-global-color-text);
+  font-family: var(--font-poppins), "Poppins", Sans-serif;
+  font-size: 16px;
+  font-weight: 400;
+  line-height: 1.5em;
+  background: var(--e-global-color-5f4d2bb);
+  max-width: 100%;
+  overflow-x: clip;
+}
+
+main,
+section,
+.e-con,
+.e-con > *,
+header,
+footer {
+  min-width: 0;
+}
+
+/* STYLES.md §2.2 — Titres Schibsted Grotesk */
+h1, h2, h3, h4, h5, h6 {
+  font-family: var(--font-schibsted), "Schibsted Grotesk", Sans-serif;
+  color: var(--e-global-color-secondary);
+  margin: 0;
+}
+
+h1 {
+  /* STYLES.md §2.2 959a6ef 68px 800 1.1em */
+  font-size: var(--e-global-typography-959a6ef-size);
+  font-weight: var(--e-global-typography-959a6ef-weight);
+  line-height: var(--e-global-typography-959a6ef-lh);
+}
+h2 {
+  font-size: var(--e-global-typography-e0f81a1-size);
+  font-weight: var(--e-global-typography-e0f81a1-weight);
+  line-height: var(--e-global-typography-e0f81a1-lh);
+  color: var(--e-global-color-secondary);
+}
+h3 { font-size: var(--e-global-typography-289ece5-size); font-weight: 600; line-height: 1.2em; }
+h4 { font-size: var(--e-global-typography-2dab3c3-size); font-weight: 600; line-height: 1.3em; }
+h5 { font-size: var(--e-global-typography-d7d20cc-size); font-weight: 600; line-height: 1.4em; }
+h6 { font-size: var(--e-global-typography-e768d2b-size); font-weight: 600; line-height: 1.5em; }
+
+p {
+  font-family: var(--font-poppins), "Poppins", Sans-serif;
+  font-size: 16px;
+  font-weight: 400;
+  line-height: 1.5em;
+  color: var(--e-global-color-text);
+}
+
+a {
+  color: var(--e-global-color-accent);
+  font-family: var(--font-poppins), "Poppins", Sans-serif;
+  font-size: 16px;
+  font-weight: 500;
+  line-height: 1.5em;
+  text-decoration: none;
+  transition: color 0.3s ease; /* STYLES.md §5 */
+}
+a:hover { color: var(--e-global-color-a3006c7); }
+
+/* STYLES.md §3.1 — Container 1280px */
+.e-con {
+  --container-max-width: 1280px;
+  max-width: var(--container-max-width);
+  margin-inline: auto;
+  padding-inline: 20px;
+  width: 100%;
+}
+.e-con--full {
+  max-width: none;
+  padding-inline: 0;
+}
+
+/* STYLES.md §5 — Utilities radius/shadow */
+.radius-pill { border-radius: 50px; }
+.radius-card { border-radius: 15px; }
+.radius-submenu { border-radius: 6px; }
+.shadow-submenu { box-shadow: var(--shadow-submenu); }
+.shadow-card { box-shadow: var(--shadow-card); }
+.shadow-card-soft { box-shadow: var(--shadow-card-soft); }
+
+/* STYLES.md §4.1 — Bouton pill 13×26 50px */
+.btn-primary {
+  /* STYLES.md §1.1 accent #FF8414 | §2.2 Poppins 16px 500 | §5 radius 50px */
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  background: var(--e-global-color-accent);
+  color: var(--e-global-color-5f4d2bb);
+  font-family: var(--font-poppins), "Poppins", Sans-serif;
+  font-size: 16px;
+  font-weight: 500;
+  line-height: 1.5em;
+  padding: 13px 26px;
+  border-radius: 50px;
+  border: 1px solid transparent;
+  cursor: pointer;
+  transition: all 0.4s ease;
+  text-decoration: none;
+  white-space: nowrap;
+}
+.btn-primary:hover {
+  background: var(--e-global-color-a3006c7);
+  color: var(--e-global-color-5f4d2bb);
+  border-radius: 50px;
+}
+.btn-primary--petrol {
+  background: var(--e-global-color-a3006c7);
+}
+.btn-primary--petrol:hover {
+  background: var(--e-global-color-accent);
+}
+.btn-primary i {
+  font-size: 20px;
+  margin-left: 15px; /* STYLES.md §4.1 icon-position-after */
+  background-color: var(--e-global-color-a3006c7);
+  color: var(--e-global-color-5f4d2bb);
+  border-radius: 50%;
+  width: 32px;
+  height: 32px;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  transition: all 0.4s ease;
+}
+.btn-primary:hover i {
+  background-color: var(--e-global-color-accent);
+}
+
+/* STYLES.md §4.3 — Navigation */
+.nav-link {
+  font-family: var(--font-poppins), "Poppins", Sans-serif;
+  font-size: 16px;
+  font-weight: 500;
+  line-height: 1.5em;
+  color: var(--e-global-color-5f4d2bb);
+  padding: 0 15px;
+  transition: color 0.4s ease;
+}
+.nav-link:hover,
+.nav-link:focus,
+.nav-link:active {
+  color: var(--e-global-color-accent);
+}
+
+/* STYLES.md §6.3 — Animations fadeInUp 1.25s */
+@keyframes fadeInUp {
+  from { opacity: 0; transform: translate3d(0, 100%, 0); }
+  to { opacity: 1; transform: none; }
+}
+@keyframes fadeIn { from { opacity: 0; } to { opacity: 1; } }
+@keyframes fadeInRight { from { opacity: 0; transform: translate3d(100%,0,0); } to { opacity: 1; transform: none; } }
+@keyframes fadeInLeft { from { opacity: 0; transform: translate3d(-100%,0,0); } to { opacity: 1; transform: none; } }
+@keyframes bounceInRight {
+  60%,75%,90%,from,to { animation-timing-function: cubic-bezier(0.215,0.61,0.355,1); }
+  from { opacity: 0; transform: translate3d(3000px,0,0); }
+  60% { opacity: 1; transform: translate3d(-25px,0,0); }
+  75% { transform: translate3d(10px,0,0); }
+  90% { transform: translate3d(-5px,0,0); }
+  to { transform: none; }
+}
+
+.fadeInUp { animation: fadeInUp 1.25s both; }
+.fadeIn { animation: fadeIn 1s both; }
+
+/* STYLES.md §11 — Swiper overrides */
+:root {
+  --swiper-theme-color: var(--e-global-color-accent);
+  --swiper-navigation-size: 44px;
+}
+.swiper { overflow: hidden; }
+.swiper-wrapper { display: flex; }
+.swiper-slide { flex-shrink: 0; width: 100%; }
+.swiper .swiper-notification { position: absolute; left: 0; top: 0; opacity: 0; pointer-events: none; }
+
+/* STYLES.md §5 — Image defaults */
+img {
+  vertical-align: middle;
+  max-width: 100%;
+  height: auto;
+  border: none;
+}
+
+/* STYLES.md §11 — Accessibility & helpers */
+.elementor-screen-only {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  margin: -1px;
+  overflow: hidden;
+  clip: rect(0,0,0,0);
+  border: 0;
+  top: -10000em;
+}
+
+/* Responsive §2.2 */
+@media (max-width: 1024px) {
+  h1 { font-size: clamp(42px, 6vw, 55px); }
+  h2 { font-size: clamp(34px, 4.5vw, 38px); }
+}
+@media (max-width: 767px) {
+  h1 { font-size: clamp(34px, 10vw, 38px); line-height: 1.08em; overflow-wrap: anywhere; }
+  h2 { font-size: clamp(28px, 8vw, 30px); line-height: 1.12em; overflow-wrap: anywhere; }
+  h3 { overflow-wrap: anywhere; }
+  .e-con { padding-inline: 15px; }
+
+  .btn-primary,
+  .rentx-outline-btn {
+    max-width: 100%;
+    white-space: normal;
+    text-align: center;
+  }
+
+  input,
+  textarea,
+  select,
+  button {
+    min-width: 0;
+    max-width: 100%;
+  }
+}
+
+/* Focus visible — STYLES.md §11 */
+:focus-visible {
+  outline: 2px solid var(--e-global-color-accent);
+  outline-offset: 2px;
+}
+
+/* Native TSX reconstruction helpers - scoped, no Elementor injection. */
+.font-schibsted { font-family: var(--font-schibsted), "Schibsted Grotesk", sans-serif; }
+.rentx-arrow {
+  display: inline-flex;
+  width: 32px;
+  height: 32px;
+  margin-left: 10px;
+  align-items: center;
+  justify-content: center;
+  border-radius: 999px;
+  background: #025466;
+  color: #fff;
+}
+.rentx-outline-btn {
+  display: inline-flex;
+  align-items: center;
+  padding: 8px 8px 8px 26px;
+  border: 1px solid rgba(255,255,255,.8);
+  border-radius: 50px;
+  color: #fff;
+  font: 500 16px/1.5 var(--font-poppins), sans-serif;
+}
+.rentx-outline-btn:hover { background:#fff; color:#000811; }
+.rentx-arrow-light { background:#fff; color:#025466; }
+.rentx-hero .btn-primary { padding: 8px 8px 8px 26px; }
+.rentx-hero h1 { color:#fff; }
+.rentx-hero .btn-primary,
+a.text-white,
+a.text-white:hover { color:#fff; }
+h1.text-white,
+h2.text-white,
+h3.text-white { color:#fff; }
+
+.rentx-card-arrow {
+  display:inline-flex;
+  flex:0 0 auto;
+  width:38px;
+  height:38px;
+  align-items:center;
+  justify-content:center;
+  border-radius:999px;
+  background:#ff8414;
+  color:#fff;
+  box-shadow:0 8px 18px rgba(255,132,20,.28);
+  transition:transform .3s ease, background-color .3s ease;
+}
+.rentx-card-arrow--light { background:#fff; color:#025466; }
+.group:hover .rentx-card-arrow,
+.rentx-card-arrow:hover { transform:rotate(45deg); background:#025466; }
+.rentx-stars { display:flex; gap:2px; color:#ff8414; font-size:14px; line-height:1; letter-spacing:1px; }
+.rentx-equipment-card,
+.rentx-service-card {
+  overflow:hidden;
+  border:1px solid rgba(2,84,102,.08);
+  border-radius:15px;
+  background:#fff;
+  box-shadow:9.899px 9.899px 30px rgba(0,0,0,.10);
+  transition:transform .35s ease, box-shadow .35s ease;
+}
+.rentx-equipment-link:hover .rentx-equipment-card,
+.rentx-service-card:hover { transform:translateY(-7px); box-shadow:0 24px 48px rgba(0,8,17,.15); }
+.rentx-equipment-media { background:linear-gradient(180deg,#fff 0%,#fff8f1 100%); }
+.rentx-equipment-media .rentx-card-arrow { position:absolute; right:16px; top:16px; }
+.rentx-equipment-card h3,
+.rentx-service-card h3 { color:#000811 !important; }
+.rentx-equipment-card p,
+.rentx-service-card p { color:#181818; }
+.rentx-eyebrow {
+  display:inline-flex;
+  align-items:center;
+  gap:8px;
+  margin-bottom:12px;
+  color:#ff8414;
+  font:600 12px/1.2 var(--font-poppins), sans-serif;
+  letter-spacing:.14em;
+  text-transform:uppercase;
+}
+.rentx-eyebrow span {
+  display:inline-flex;
+  width:24px;
+  height:24px;
+  align-items:center;
+  justify-content:center;
+  border-radius:50%;
+  background:#ff8414;
+  color:#fff;
+  font-size:8px;
+}
+
+@media (max-width: 1024px) {
+  .rentx-hero, .rentx-hero .e-con { min-height: 620px; }
+
+  .rentx-header-logo { width: 185px !important; }
+}
+
+@media (max-width: 767px) {
+  .rentx-hero, .rentx-hero .e-con { min-height: 560px; }
+  .rentx-hero .e-con { padding-top: 112px; padding-bottom: 48px; }
+  .rentx-hero-actions { gap: 10px; }
+  .rentx-header-logo { width: 160px !important; }
+  .rentx-header-logo img { height: 38px !important; }
+  .rentx-menu-toggle { padding: 14px !important; }
+
+  footer .e-con { padding-inline: 15px !important; }
+  footer .grid > * { min-width: 0; }
+  footer h3,
+  footer p,
+  footer a { overflow-wrap: anywhere; }
+}
+
+@media (max-width: 380px) {
+  .e-con { padding-inline: 12px; }
+  .rentx-header-logo { width: 138px !important; }
+  .rentx-hero, .rentx-hero .e-con { min-height: 600px; }
+  .rentx-hero-actions > * { width: 100%; }
+  .rentx-arrow { margin-left: auto; }
+}
