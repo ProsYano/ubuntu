@@ -1,4 +1,6 @@
 import type { ReactNode } from "react";
+import Image from "next/image";
+import Link from "next/link";
 
 /* STYLES.md §5 — Card 15px / shadow 0 0 30 0.15 / border #FFFFFF1F */
 export function Card({ children, className = "", hover = true }: { children: ReactNode; className?: string; hover?: boolean }) {
@@ -23,13 +25,15 @@ export function EquipmentCard({
   href?: string;
 }) {
   return (
-    <a href={href} className="group block">
+    <Link href={href} className="group block">
       {/* STYLES.md §4.2 — thumb radius 15/20 + hover scale 1.05 rotate 2deg */}
       <div className="overflow-hidden rounded-[15px] bg-white shadow-[9.899px_9.899px_30px_0_rgba(0,0,0,0.1)]">
         <div className="overflow-hidden">
-          <img
+          <Image
             src={image}
             alt={title}
+            width={800}
+            height={440}
             className="w-full h-[220px] object-cover transition-all duration-400 ease-[ease] group-hover:scale-[1.05] group-hover:rotate-[2deg] group-hover:opacity-80"
             loading="lazy"
           />
@@ -43,6 +47,6 @@ export function EquipmentCard({
           </p>
         </div>
       </div>
-    </a>
+    </Link>
   );
 }

@@ -49,10 +49,16 @@ export const ANIM = {
 } as const;
 
 export const SITE = {
-  name: "RentX",
-  url: process.env.NEXT_PUBLIC_SITE_URL || "https://rentx.example.com",
-  description:
-    "RentX — Empowering Your Projects With Our Premium Machinery. Location d'engins lourds premium, fiable et rapide.",
-  locale: "fr_FR",
+  name: "Ubuntu Location BTP",
+  url: process.env.NEXT_PUBLIC_SITE_URL || "https://www.ubuntulocationbtp.com",
+  description: "Location d’engins et d’équipements pour les travaux publics, le bâtiment, les mines et l’industrie à Brazzaville. Ubuntu Location BTP : solidarité, fiabilité, performance.",
+  locale: "fr_CG",
   lang: "fr",
+  email: "contact@ubuntulocationbtp.com",
+  phones: ["066 962 397", "044 790 405", "068 086 081"],
+  address: "N° 1305, rue Bangou, Plateau des 15 ans, Brazzaville",
+  hours: "Lun–Ven : 08h00–17h30 / Sam : 08h00–13h00",
+  emergencies: "Selon besoins opérationnels des chantiers",
 } as const;
+export const phoneHref = (phone: string) => `tel:+242${phone.replaceAll(" ", "")}`;
+export const mapHref = `https://www.google.com/maps/search/?api=1&query=${encodeURIComponent(SITE.address)}`;

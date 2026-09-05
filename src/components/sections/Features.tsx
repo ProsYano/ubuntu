@@ -12,7 +12,7 @@ export function Features() {
     <section className="py-14 bg-[var(--e-global-color-b4c3f3a)]">
       <div className="e-con">
         <div className="grid md:grid-cols-3 gap-5">
-          {features.map((f, i) => (
+          {features.map((f) => (
             <div key={f.title}>
               <Card>
                 <div className="flex items-center gap-[15px]">

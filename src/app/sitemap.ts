@@ -1,14 +1,11 @@
 import type { MetadataRoute } from "next";
 import { SITE } from "@/lib/constants";
-
-export default function sitemap(): MetadataRoute.Sitemap {
-  const base = SITE.url;
-  const now = new Date();
-  const routes = ["", "/about", "/services", "/equipments", "/faq", "/contact"];
-  return routes.map((r) => ({
-    url: `${base}${r || "/"}`,
-    lastModified: now,
-    changeFrequency: r === "" ? "weekly" : "monthly",
-    priority: r === "" ? 1 : 0.8,
-  }));
+import { getPublishedEquipment } from "@/lib/equipment";
+export const revalidate = 300;
+export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
+  const equipment = await getPublishedEquipment();
+  return [
+    ...["/", "/about", "/services", "/equipments", "/faq", "/contact"].map(path=>({url:`${SITE.url}${path}`})),
+    ...equipment.map(item=>({url:`${SITE.url}/equipments/${item.slug}`,lastModified:new Date(item.updated_at)})),
+  ];
 }

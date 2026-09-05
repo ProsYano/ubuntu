@@ -1,5 +1,6 @@
 import type { NextConfig } from "next";
 
+const storageUrl = process.env.NEXT_PUBLIC_SUPABASE_URL ? new URL(process.env.NEXT_PUBLIC_SUPABASE_URL) : null;
 const nextConfig: NextConfig = {
   /* STYLES.md §3.1 — Container 1280px | §6.1 libs autorisées — Config PRO SEO extrême */
   reactStrictMode: true,
@@ -13,6 +14,7 @@ const nextConfig: NextConfig = {
     deviceSizes: [640, 750, 828, 1080, 1200, 1920, 2048, 3840],
     imageSizes: [16, 32, 48, 64, 96, 128, 256, 384],
     remotePatterns: [
+      ...(storageUrl ? [{protocol: storageUrl.protocol.replace(":", "") as "https" | "http", hostname: storageUrl.hostname, port: storageUrl.port, pathname: "/storage/v1/object/public/ubuntu-equipment/**"}] : []),
       { protocol: "https", hostname: "kits.roxthemes.com" },
       { protocol: "https", hostname: "images.unsplash.com" },
     ],
@@ -33,18 +35,7 @@ const nextConfig: NextConfig = {
       },
     ];
 
-    // Never cache development chunks as immutable: Turbopack reuses their URLs
-    // while their module graph changes, which otherwise leaves stale factories
-    // in the browser after HMR updates.
-    if (process.env.NODE_ENV === "production") {
-      headers.push({
-        source: "/(.*)\\.(js|css|woff|woff2|ttf|otf|webp|avif|png|jpg|jpeg|svg)",
-        headers: [
-          { key: "Cache-Control", value: "public, max-age=31536000, immutable" },
-        ],
-      });
-    }
-
+    headers.push({source: "/auth/:path*", headers: [{key: "Referrer-Policy", value: "no-referrer"}, {key: "X-Robots-Tag", value: "noindex, nofollow"}]});
     return headers;
   },
   // Redirections canoniques SEO (exemple)
@@ -56,6 +47,7 @@ const nextConfig: NextConfig = {
   // Experimental — perf extrême
   experimental: {
     optimizePackageImports: ["swiper"],
+    serverActions: { bodySizeLimit: "6mb" },
   },
 };
 

@@ -1,5 +1,6 @@
 "use client";
 
+import Image from "next/image";
 import Link from "next/link";
 
 const stats = [["120+", "Areas Covered"], ["750+", "Equipment Units"], ["12k+", "Happy Customers"]];
@@ -7,7 +8,7 @@ const stats = [["120+", "Areas Covered"], ["750+", "Equipment Units"], ["12k+", 
 export function Hero() {
   return (
     <section className="rentx-hero relative isolate min-h-[680px] overflow-hidden bg-[#000811]">
-      <img src="/rentx-reference/asset-0ce01cf52a749e06.webp" alt="Construction site" className="absolute inset-0 h-full w-full object-cover" fetchPriority="high" />
+      <Image src="/rentx-reference/asset-0ce01cf52a749e06.webp" alt="Construction site" fill priority sizes="100vw" className="absolute inset-0 h-full w-full object-cover" />
       <div className="absolute inset-0 bg-gradient-to-r from-black/80 via-black/55 to-black/25" />
       <div className="e-con relative flex min-h-[680px] items-center pt-[105px] pb-[70px]">
         <div className="relative z-20 max-w-[710px]">
@@ -18,7 +19,7 @@ export function Hero() {
             <Link href="/contact" className="rentx-outline-btn">Get a Quote <span className="rentx-arrow rentx-arrow-light">↗</span></Link>
           </div></div>
         </div>
-        <img src="/rentx-reference/asset-b2f49d8c0899fa18.png" alt="Heavy wheel loader" className="absolute bottom-[-24px] right-[-75px] z-10 hidden w-[630px] object-contain lg:block" />
+        <Image src="/rentx-reference/asset-b2f49d8c0899fa18.png" alt="Heavy wheel loader" width={630} height={480} className="absolute bottom-[-24px] right-[-75px] z-10 hidden w-[630px] object-contain lg:block" />
         <div className="absolute bottom-[38px] left-5 z-30 hidden overflow-hidden rounded-[15px] bg-white shadow-2xl md:flex">
           {stats.map(([value, label]) => <div key={label} className="min-w-[150px] px-6 py-5 text-center"><div className="font-schibsted text-[30px] font-bold leading-none text-[#000811]">{value}</div><div className="mt-1 text-[11px] text-[#181818]">{label}</div></div>)}
         </div>
