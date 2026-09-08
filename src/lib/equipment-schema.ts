@@ -27,7 +27,7 @@ export type Equipment = EquipmentInput & {
   id: string; slug: string; image_path: string | null;
   created_at: string; updated_at: string; deleted_at: string | null;
 };
-export type ActionState = { error?: string; success?: string; fields?: Record<string, string[] | undefined> };
+export type ActionState = { recoveryPath?: string; error?: string; success?: string; fields?: Record<string, string[] | undefined> };
 export function slugify(value: string) {
   return value.normalize("NFD").replace(/[\u0300-\u036f]/g, "").toLowerCase().replace(/[^a-z0-9]+/g, "-").replace(/^-|-$/g, "").slice(0, 90);
 }
@@ -38,7 +38,6 @@ export function formatRate(value: number | null) {
 export function imageUrl(path: string | null) {
   if (!path) return null;
   if (/^\/rentx-reference\/asset-[a-f0-9]+\.png$/.test(path)) return path;
-  if (!/^[a-f0-9-]{36}\/[a-f0-9-]{36}\.webp$/.test(path)) return null;
-  const base = process.env.NEXT_PUBLIC_SUPABASE_URL;
-  return base ? `${base}/storage/v1/object/public/ubuntu-equipment/${path}` : null;
+  if (/^\/api\/media\/[a-f0-9-]{36}\.webp$/.test(path)) return path;
+  return null;
 }

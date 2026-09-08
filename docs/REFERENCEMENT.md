@@ -37,4 +37,4 @@ Le code prépare l’exploration et la compréhension du site. L’indexation et
 
 - Google Search Central : https://developers.google.com/search/docs/fundamentals/seo-starter-guide
 - Métadonnées Next.js : documentation locale `node_modules/next/dist/docs/01-app/01-getting-started/14-metadata-and-og-images.md`
-- Supabase SSR : https://supabase.com/docs/guides/auth/server-side/creating-a-client
+- Exploitation SQLite : [Guide d’activation](ACTIVATION.md)

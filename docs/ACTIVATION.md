@@ -1,92 +1,92 @@
-# Activation du catalogue Ubuntu Location BTP
+# Installation et exploitation — SQLite
 
-Le site dispose d’un catalogue persistant via Supabase, d’une authentification par e-mail et mot de passe, d’un espace de gestion réservé aux comptes autorisés et de photographies stockées dans Supabase Storage. Aucune clé privilégiée n’est utilisée dans l’application.
+## 1. Environnement
 
-## 1. Choisir le projet Supabase
+Utiliser Node.js 22.13+ (24 recommandé), `npm ci`, puis configurer `.env.local` selon `.env.example`. Les anciens paramètres `NEXT_PUBLIC_SUPABASE_*` ne sont plus utilisés. Aucun service distant n’est nécessaire.
 
-Utiliser un projet dédié ou un projet explicitement choisi pour Ubuntu. Ne pas appliquer cette migration à un autre projet sans en vérifier la destination. La migration crée uniquement `ubuntu_editors`, `ubuntu_equipment`, leurs règles et le bucket `ubuntu-equipment` ; elle conserve les six catégories existantes sous forme de fiches initiales.
+Définir `RENTX_DATA_DIR` vers un dossier privé sur disque persistant, par exemple `/var/lib/rentx`. Le compte système de l’application doit pouvoir y lire et écrire. Ne pas utiliser `public/`, un partage réseau, un dossier de build ou un disque éphémère. Un seul serveur avec plusieurs processus sur le même disque local peut partager SQLite ; plusieurs serveurs indépendants nécessitent une autre architecture de stockage.
 
-Appliquer `supabase/migrations/20260905110833_ubuntu_equipment_catalogue.sql` via le SQL Editor du projet choisi ou le mécanisme habituel de migration Supabase. Le SQL Editor n’enregistre pas l’historique CLI : choisir une seule méthode, sans exécuter deux fois la migration.
+SQLite est initialisé automatiquement, avec schéma versionné, clés étrangères, journal WAL et délai d’attente pour les écritures concurrentes. Les six fiches de départ sont insérées une seule fois. Supprimer toutes les fiches ne les fait pas réapparaître.
 
-Les tables sont protégées par RLS et leurs droits SQL sont explicites. Seuls les comptes figurant dans `ubuntu_editors` peuvent publier ou modifier le catalogue. Aucun formulaire d’inscription publique n’est proposé. Même si une inscription a lieu directement via l’API Auth, elle ne donne aucun droit de gestion.
-
-## 2. Configurer l’application
-
-Renseigner `.env.local` en développement et les variables d’environnement du fournisseur d’hébergement en production :
-
-```dotenv
-NEXT_PUBLIC_SITE_URL=https://www.ubuntulocationbtp.com
-NEXT_PUBLIC_SUPABASE_URL=https://VOTRE_PROJET.supabase.co
-NEXT_PUBLIC_SUPABASE_PUBLISHABLE_KEY=VOTRE_CLE_PUBLIABLE
-GOOGLE_SITE_VERIFICATION=
-```
-
-Utiliser uniquement la clé **publishable**. Aucune clé `service_role`, clé secrète ou mot de passe de base de données n’est nécessaire. Ne jamais transmettre un mot de passe dans le code ou le dépôt.
-
-Avant activation, le site présente les six fiches initiales et la connexion affiche son état de configuration. Une fois les variables renseignées, le catalogue provient exclusivement de la base : un catalogue vide reste vide et une panne n’est pas masquée par des données de démonstration. Reconstruire et redémarrer l’application après tout changement de configuration.
-
-## 3. Créer les accès de l’équipe
-
-Dans Supabase Auth, créer ou inviter le compte de chaque personne autorisée. Les mots de passe se définissent dans le parcours sécurisé de l’utilisateur ; ne pas les stocker dans des scripts.
-
-Dans le SQL Editor, inscrire le compte concerné dans la table d’autorisation, en remplaçant l’adresse d’exemple :
-
-```sql
-insert into public.ubuntu_editors (user_id)
-select id from auth.users where lower(email) = lower('adresse-du-gestionnaire@example.com')
-on conflict (user_id) do nothing;
-```
-
-Vérifier qu’une ligne a bien été ajoutée. La simple présence d’un compte Auth ne suffit pas.
-
-Pour retirer l’accès, supprimer uniquement son entrée dans `ubuntu_editors`. La vérification de rôle est refaite pour chaque mutation ; une session encore valide ne conserve pas les droits révoqués.
-
-## 4. Configurer les liens d’authentification
-
-Dans Auth → URL Configuration, définir l’URL de production du site. Autoriser exactement :
-
-- `https://www.ubuntulocationbtp.com/auth/callback`
-- `https://www.ubuntulocationbtp.com/auth/confirm`
-- Les équivalents `http://localhost:3000` ou `http://127.0.0.1:3000` uniquement pour le développement.
-
-Le formulaire « Mot de passe oublié » utilise le callback PKCE. Ouvrir son lien dans le même navigateur que celui utilisé pour la demande. Le callback gère également les liens d’invitation contenant une session dans le fragment de l’URL, la vérifie via Supabase puis retire les jetons de l’adresse du navigateur.
-
-Lors d’une invitation, utiliser `/auth/callback` comme destination. Si les modèles d’e-mail sont personnalisables, les liens suivants permettent la vérification serveur par `token_hash` :
-
-```html
-<!-- Réinitialisation -->
-<a href="{{ .SiteURL }}/auth/confirm?token_hash={{ .TokenHash }}&type=recovery">Définir mon mot de passe</a>
-<!-- Invitation -->
-<a href="{{ .SiteURL }}/auth/confirm?token_hash={{ .TokenHash }}&type=invite">Activer mon accès</a>
-```
-
-Configurer un fournisseur SMTP de production et un expéditeur vérifié. Depuis le 3 juin 2026, les nouveaux projets gratuits utilisant le fournisseur d’e-mail Supabase par défaut ne peuvent plus personnaliser les modèles ; le callback standard fonctionne sans personnalisation. Les limites d’envoi et les limitations de tentatives sont gérées par Supabase Auth. Vérifier leurs réglages et la réception des e-mails avant l’ouverture de l’espace à l’équipe.
-
-## 5. Utiliser le catalogue
-
-1. Ouvrir `/connexion` et se connecter avec un compte autorisé.
-2. Le lien « Gérer les engins » apparaît dans l’en-tête.
-3. Cliquer sur « Ajouter un engin », renseigner nom, catégorie, présentation, description, capacités générales, caractéristiques, tarifs éventuels et photographie.
-4. Choisir « Brouillon » ou « Publié », puis enregistrer.
-5. Les fiches publiées alimentent l’accueil, le catalogue à défilement infini, la liste de demande de devis, leur page individuelle et le sitemap.
-6. « Modifier » permet de remplacer ou retirer la photo et d’actualiser le texte, le SEO et la disponibilité.
-7. « Supprimer » demande confirmation et déplace la fiche dans la corbeille. La restauration remet la fiche en brouillon.
-
-Les photographies doivent être destinées à être publiques, même celles de brouillons : le bucket est public. Le serveur accepte JPG, PNG et WebP jusqu’à 5 Mo, vérifie le contenu, refuse les SVG et les images invalides, retire les métadonnées et produit un WebP de 1 920 × 1 440 pixels maximum. Chaque remplacement crée une nouvelle URL. Les images des anciennes versions sont conservées ; une purge administrative ultérieure peut retirer les objets qui ne sont référencés par aucune fiche, y compris en corbeille. Sauvegarder séparément la base et le stockage selon les besoins de l’entreprise.
-
-Les URL des fiches restent stables lors d’un changement de nom. Les modifications concurrentes sont détectées pour éviter d’écraser silencieusement le travail d’un collègue.
-
-## 6. Validation
+## 2. Premier administrateur et agents
 
 ```bash
-npm run test
-npm run typecheck
-npm run lint
-npm run build
-# Alternative si Turbopack ne peut pas ouvrir ses ports locaux dans un environnement restreint :
-npm run build:webpack
+npm run account -- create-admin admin@exemple.fr "Administrateur Ubuntu"
+npm run account -- create-agent agent@exemple.fr "Agent Ubuntu"
 ```
 
-Les tests exécutent la migration avec PostgreSQL embarqué (PGlite), en simulant uniquement les schémas Supabase `auth` et `storage`. Ils contrôlent les véritables règles RLS, les permissions, la publication, la corbeille, la révocation et la protection des objets. Ils vérifient aussi la validation des champs et le traitement réel des images avec Sharp. Ils ne remplacent pas le test de connexion, la livraison d’e-mails et le téléversement sur le projet Supabase choisi.
+Le terminal demande un mot de passe de 12 à 128 caractères, sans l’afficher, puis sa confirmation. Ne pas mettre les mots de passe dans une commande, un fichier versionné ou la conversation. La commande refuse d’écraser un compte existant.
 
-Après activation, effectuer un cycle complet avec un engin de vérification : création d’un brouillon, ajout d’une photo, publication, modification, suppression et restauration ; contrôler simultanément la fiche publique et le sitemap. Vérifier aussi un compte sans rôle de gestion et un visiteur anonyme. Exécuter les conseillers de sécurité Supabase sur le projet avant mise en production.
+Les clients s’inscrivent sur `/inscription`. Un administrateur peut ensuite attribuer le rôle agent à un compte existant depuis `/gestion/utilisateurs`. Il peut aussi révoquer ce rôle ou suspendre un compte. Ces changements révoquent toutes les sessions du compte. Les comptes administrateurs sont créés exclusivement par l’exploitant du serveur. Il n’existe aucune inscription publique privilégiée.
+
+Les rôles sont exclusifs : le catalogue appartient aux agents, les commandes et réponses aux administrateurs, les demandes aux clients. Pour exercer plusieurs fonctions, utiliser des comptes distincts. Un changement de rôle n’efface pas les anciennes données ; elles restent conservées et accessibles à l’administration.
+
+## 3. Commandes et messages
+
+Un client sélectionne un engin publié, des dates (début et fin inclus), son téléphone, son chantier et son besoin. Les engins marqués indisponibles ne peuvent pas être demandés. Le nom et le tarif journalier sont copiés dans la commande afin de préserver son historique.
+
+Parcours des statuts :
+
+- En attente → acceptée, refusée ou annulée.
+- Acceptée → terminée ou annulée par l’administration.
+- Refusée, terminée et annulée : états finaux.
+
+Le client peut annuler uniquement une demande en attente. Pour annuler une commande acceptée, il contacte l’admin. Un refus ou une annulation par l’admin exige un motif visible par le client. Chaque changement est historisé. Les versions de formulaire évitent d’écraser un traitement simultané. L’acceptation vérifie atomiquement la disponibilité et les réservations acceptées qui se chevauchent : une fiche représente un engin réservable, pas un stock de plusieurs exemplaires. Créer une fiche par engin physique pour réserver plusieurs unités.
+
+Chaque commande possède une conversation. Le client peut également ouvrir une conversation générale. Seuls le client concerné et les admins ont accès au fil ; les agents n’y accèdent pas. Les fils affichent les messages non lus, les dates et les accusés de lecture. L’actualisation se fait toutes les 30 secondes lorsque la page est visible et qu’aucun message n’est en cours de saisie. Les listes et messages sont paginés. Un admin peut fermer puis rouvrir un fil ; sa fermeture conserve l’historique.
+
+Le site ne réalise pas de paiement et n’émet pas de devis financier contractuel. Il n’envoie pas d’e-mails ou de SMS automatiques. Les réponses et changements de statut sont consultables dans le compte.
+
+## 4. Récupération des mots de passe
+
+Le titulaire contacte l’administration depuis `/mot-de-passe-oublie`. Après vérification d’identité, l’admin peut créer un lien de récupération depuis la fiche utilisateur, puis le remettre en privé au titulaire. Ce lien expire après 30 minutes et n’est utilisable qu’une seule fois. Aucun e-mail n’est prétendument envoyé par l’application.
+
+Pour un administrateur, ou depuis le serveur :
+
+```bash
+npm run account -- reset admin@exemple.fr
+```
+
+La commande affiche le lien confidentiel une seule fois. Sa consommation révoque toutes les sessions et tous les autres liens de récupération de ce compte. Le changement de mot de passe depuis un compte exige le mot de passe actuel et déconnecte les autres sessions.
+
+## 5. Sécurité d’exploitation
+
+Utiliser HTTPS en production : les cookies de session sont `HttpOnly`, `Secure` en production, `SameSite=Lax`, avec expiration de sept jours. Les jetons de session et de récupération sont hachés en base ; les mots de passe utilisent scrypt avec un sel aléatoire. Les droits sont relus côté serveur pour les opérations privées ; masquer un bouton n’est pas le contrôle d’accès.
+
+Les formulaires utilisent les Server Actions Next.js et leur protection d’origine. Ne pas élargir `allowedOrigins` sans besoin. Les tentatives de connexion et créations sont limitées globalement et par adresse e-mail ; les mutations connectées le sont par compte. Si un reverse proxy de confiance écrase `X-Forwarded-For`, activer `RENTX_TRUST_PROXY=true` pour ajouter les limites par IP. Ne pas l’activer si les visiteurs peuvent fournir eux-mêmes ce header. Adapter les seuils au trafic réel et ajouter une protection en amont pour un site très exposé.
+
+Les photos (JPG, PNG, WebP, 5 Mo maximum) sont décodées, validées, redimensionnées et converties en WebP. Leurs métadonnées sont retirées. Elles sont servies par `/api/media/UUID.webp` ; les photos de brouillons ou de fiches supprimées sont réservées aux agents. L’optimiseur Next.js n’accepte pas ces URLs afin d’éviter un cache public après retrait. Les anciens fichiers devenus inutilisés restent sur disque pour faciliter la récupération ; surveiller l’espace disque.
+
+Ne pas servir le dossier de données ni les sauvegardes depuis le reverse proxy. Ne pas journaliser les mots de passe, cookies ou paramètres `token` des liens de récupération. Le journal `audit_log` conserve les opérations principales sans les secrets. Aucune vérification d’adresse e-mail automatique n’est mise en place : l’admin doit vérifier l’identité avant de donner des droits ou un lien de récupération.
+
+## 6. Sauvegarde et restauration
+
+```bash
+npm run db:backup
+# Ou destination personnalisée :
+npm run db:backup -- /chemin/prive/sauvegardes
+```
+
+La commande utilise l’API de sauvegarde SQLite, puis copie les photos dans un dossier horodaté. Elle peut fonctionner pendant que l’application est active. Les photos ne sont pas supprimées automatiquement, ce qui permet de copier toutes les photos référencées par la sauvegarde. Programmer cette commande, conserver plusieurs versions et copier les sauvegardes sur un autre support privé. Le script seul ne met pas en place cette planification.
+
+Pour restaurer : arrêter tous les processus de l’application ; conserver une copie du dossier de données actuel ; remplacer le dossier par `rentx.db` et `uploads/` de la sauvegarde ; vérifier propriétaire et droits ; redémarrer. Ne pas conserver les anciens fichiers `rentx.db-wal` et `rentx.db-shm` à côté d’une base restaurée. Invalider les sessions et liens récupérés d’une ancienne sauvegarde avant remise en service : exécuter `DELETE FROM sessions; DELETE FROM password_resets;` sur la base restaurée via un outil SQLite privé. Tester régulièrement une restauration sur une copie.
+
+## 7. Données de l’ancienne version
+
+Le code ne modifie aucun projet Supabase distant. L’ancienne migration SQL dans `supabase/migrations/` est conservée comme historique, elle ne s’exécute plus. Les anciens comptes, mots de passe, photos et fiches distants ne sont pas transférés automatiquement.
+
+Pour des fiches supplémentaires, exporter un tableau JSON avec les champs `Equipment` (voir `src/lib/equipment-schema.ts`), dont `id`, `slug`, `created_at`, `updated_at` et `deleted_at`, puis :
+
+```bash
+npm run db:import -- /chemin/catalogue.json
+```
+
+L’import valide toutes les fiches et se déroule en une transaction. Il refuse un ID ou slug existant, sans écraser aucune fiche ; pour les six fiches déjà initialisées, mettre à jour leurs informations dans l’espace agent. Les champs d’auteur historiques ne sont pas repris. Pour les anciennes photos, les convertir en WebP, les copier dans `RENTX_DATA_DIR/uploads/` sous un nom UUID et utiliser `/api/media/UUID.webp` dans le JSON ; sinon mettre `image_path` à `null`. Les utilisateurs doivent recréer leurs comptes et recevoir leurs droits localement.
+
+Faire l’import avec l’application arrêtée, puis reconstruire (`npm run build`) afin de ne pas conserver un catalogue prérendu antérieur.
+
+## 8. Mise en ligne
+
+Configurer le domaine HTTPS, `NEXT_PUBLIC_SITE_URL`, le volume persistant et les comptes. Exécuter les tests, `npm run build` puis `npm start`. Prévoir un gestionnaire de processus et des sauvegardes régulières. Le build utilise webpack par défaut, car Turbopack rencontre une restriction de création de processus/ports dans cet environnement. `npm run build:turbopack` reste disponible sur un hébergement compatible.
+
+Vercel Functions n’est pas compatible avec cette base locale modifiable. Choisir un serveur/VPS ou un hébergeur Node.js avec volume persistant ; une adaptation du stockage est nécessaire avant tout déploiement serverless.

@@ -45,3 +45,13 @@ next-env.d.ts
 !.env.example
 /supabase/.temp/
 /supabase/.branches/
+
+# Persistent SQLite database, uploads and backups
+/data/
+/backups/
+*.db
+*.db-wal
+*.db-shm
+
+/test-results/
+/playwright-report/

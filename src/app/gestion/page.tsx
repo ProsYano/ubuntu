@@ -1,2 +1,3 @@
 import { redirect } from "next/navigation";
-export default function Page() { redirect("/gestion/engins"); }
+import { requireAccess, homeFor } from "@/lib/auth";
+export default async function Page() { const { user } = await requireAccess(["agent", "admin"]); redirect(homeFor(user)); }

@@ -1,28 +1,11 @@
-import { createServerClient } from "@supabase/ssr";
 import { NextResponse, type NextRequest } from "next/server";
-import { getSupabaseConfig } from "@/lib/supabase/config";
-
-export async function proxy(request: NextRequest) {
-  let response = NextResponse.next({ request });
+export function proxy(request: NextRequest) {
+  const headers = new Headers(request.headers);
+  headers.set("x-rentx-path", request.nextUrl.pathname + request.nextUrl.search);
+  const response = NextResponse.next({ request: { headers } });
   response.headers.set("Cache-Control", "private, no-store");
-  const config = getSupabaseConfig();
-  if (!config) return response;
-  const supabase = createServerClient(config.url, config.key, {
-    cookies: {
-      getAll: () => request.cookies.getAll(),
-      setAll(values, cacheHeaders) {
-        values.forEach(({ name, value }) => request.cookies.set(name, value));
-        response = NextResponse.next({ request });
-        values.forEach(({ name, value, options }) => response.cookies.set(name, value, options));
-        Object.entries(cacheHeaders).forEach(([key, value]) => response.headers.set(key, value));
-        response.headers.set("Cache-Control", "private, no-store");
-      },
-    },
-  });
-  await supabase.auth.getClaims();
+  response.headers.set("X-Robots-Tag", "noindex, nofollow");
+  response.headers.set("Referrer-Policy", "no-referrer");
   return response;
 }
-
-export const config = {
-  matcher: ["/gestion/:path*", "/connexion", "/compte/:path*", "/auth/:path*", "/api/auth/:path*", "/mot-de-passe-oublie"],
-};
+export const config = { matcher: ["/gestion/:path*", "/connexion", "/inscription", "/compte/:path*", "/auth/:path*", "/api/auth/:path*", "/mot-de-passe-oublie", "/reinitialiser-mot-de-passe"] };

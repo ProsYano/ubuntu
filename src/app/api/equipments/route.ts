@@ -7,6 +7,6 @@ export async function GET(request: NextRequest) {
     return Response.json({error:"Paramètres invalides."},{status:400});
   }
   try {
-    return Response.json(await getPublishedEquipmentPage(offset,limit), {headers:{"Cache-Control":"public, s-maxage=300, stale-while-revalidate=600"}});
+    return Response.json(await getPublishedEquipmentPage(offset,limit), {headers:{"Cache-Control":"no-store"}});
   } catch { return Response.json({error:"Catalogue indisponible."},{status:503}); }
 }

@@ -1,20 +1,20 @@
 import type { NextConfig } from "next";
 
-const storageUrl = process.env.NEXT_PUBLIC_SUPABASE_URL ? new URL(process.env.NEXT_PUBLIC_SUPABASE_URL) : null;
 const nextConfig: NextConfig = {
   /* STYLES.md §3.1 — Container 1280px | §6.1 libs autorisées — Config PRO SEO extrême */
   reactStrictMode: true,
+  serverExternalPackages: ["better-sqlite3"],
   poweredByHeader: false,
   compress: true,
   // trailingSlash: false — SEO canonical strict
   trailingSlash: false,
   // Images : optimisation pro — formats modernes, pas de base64 lourd
   images: {
+    localPatterns: [{ pathname: "/rentx-reference/**" }, { pathname: "/icon.svg" }],
     formats: ["image/avif", "image/webp"],
     deviceSizes: [640, 750, 828, 1080, 1200, 1920, 2048, 3840],
     imageSizes: [16, 32, 48, 64, 96, 128, 256, 384],
     remotePatterns: [
-      ...(storageUrl ? [{protocol: storageUrl.protocol.replace(":", "") as "https" | "http", hostname: storageUrl.hostname, port: storageUrl.port, pathname: "/storage/v1/object/public/ubuntu-equipment/**"}] : []),
       { protocol: "https", hostname: "kits.roxthemes.com" },
       { protocol: "https", hostname: "images.unsplash.com" },
     ],
