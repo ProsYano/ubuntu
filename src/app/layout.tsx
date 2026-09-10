@@ -23,6 +23,12 @@ const poppins = Poppins({
   preload: true,
 });
 
-export const metadata = buildMetadata();
+export const metadata = {
+  ...buildMetadata(),
+  icons: {
+    icon: { url: "/branding/ubuntu-location-btp.jpg", type: "image/jpeg" },
+    apple: { url: "/branding/ubuntu-location-btp.jpg", type: "image/jpeg" },
+  },
+};
 export const viewport: Viewport = {themeColor: "#e9ad16", width: "device-width", initialScale: 1};
 export default function RootLayout({children}: {children: React.ReactNode}){return <html lang="fr" className={`${schibsted.variable} ${poppins.variable}`}><body><JsonLd data={jsonLdWebsite()}/><script type="application/ld+json" dangerouslySetInnerHTML={{__html:JSON.stringify(jsonLdOrganization()).replace(/</g,"\\u003c")}}/><a className="skip-link" href="#main">Aller au contenu</a><Header/><main id="main">{children}</main><Footer/><ContactDock/></body></html>;}

@@ -400,3 +400,9 @@
   .message-bubble { max-width: 100%; padding: 16px; }
   .workspace-nav { gap: 8px; }
 }
+
+/* Official logo: preserve the full artwork and its original proportions. */
+.site-header .brand,.site-footer .footer-brand{flex-shrink:0;width:fit-content;line-height:0}
+.brand-logo{display:block;width:84px;height:auto;object-fit:contain}
+.brand-logo-footer{width:160px;max-width:100%}
+@media(max-width:800px){.site-header .brand-logo{width:68px}}

@@ -27,6 +27,7 @@ export function buildMetadata({ title, description, path = "/", noIndex = false,
 export function jsonLdOrganization() {return {
   "@context":"https://schema.org", "@type":"LocalBusiness", "@id":`${SITE.url}/#organization`,
   name:SITE.name, url:SITE.url, description:SITE.description, email:SITE.email,
+  logo:`${SITE.url}/branding/ubuntu-location-btp.jpg`,
   telephone:phoneHref(SITE.phones[0]).replace("tel:",""),
   contactPoint:SITE.phones.map(phone => ({"@type":"ContactPoint",telephone:phoneHref(phone).replace("tel:",""),contactType:"customer service",availableLanguage:"French"})),
   address:{"@type":"PostalAddress",streetAddress:"N° 1305, rue Bangou, Plateau des 15 ans",addressLocality:"Brazzaville",addressCountry:"CG"},
