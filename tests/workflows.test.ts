@@ -365,7 +365,7 @@ test("version 2 public requests migrate intact to pending with history", async (
     const admin = store.createUser("Admin", "migration@example.test", "unused", "admin");
     const equipment = store.published().items[0];
     const id = store.createPublicQuoteRequest({ name: "Ancien contact", email: "old@example.test", equipment_id: equipment.id, start_date: today(), end_date: today(), phone: "+242 060000000", company: "Société historique", location: "Brazzaville", notes: "Demande reçue avant la migration.", request_key: randomUUID() });
-    db.exec("DROP TABLE quote_events; DROP INDEX quotes_availability; ALTER TABLE quote_requests DROP COLUMN status; ALTER TABLE quote_requests DROP COLUMN admin_note; ALTER TABLE quote_requests DROP COLUMN version; ALTER TABLE quote_requests DROP COLUMN updated_at;");
+    db.exec("DROP TABLE quote_audio; DROP TABLE quote_events; DROP INDEX quotes_availability; ALTER TABLE quote_requests DROP COLUMN status; ALTER TABLE quote_requests DROP COLUMN admin_note; ALTER TABLE quote_requests DROP COLUMN version; ALTER TABLE quote_requests DROP COLUMN updated_at;");
     db.pragma("user_version = 2");
     db.close(); db = openDatabase(filename); store = new Store(db);
     assert.equal(store.publicQuote(admin.id, id)?.company, "Société historique");
@@ -375,4 +375,18 @@ test("version 2 public requests migrate intact to pending with history", async (
     db.close(); db = openDatabase(filename);
     assert.equal(new Store(db).publicQuoteEvents(admin.id, id).length, 1);
   } finally { db.close(); await rm(directory, { recursive: true, force: true }); }
+});
+
+test("public quote audio is retained atomically and duplicate submissions preserve the original", () => {
+  const { db, store, equipment, order } = fixture();
+  try {
+    const raw = { ...order(), name: "Contact vocal", email: "voice@example.test" };
+    const audio = { type: "audio/webm", bytes: Buffer.from([0x1a, 0x45, 0xdf, 0xa3]) };
+    const id = store.createPublicQuoteRequest(raw, audio);
+    assert.deepEqual(db.prepare("SELECT data FROM quote_audio WHERE quote_id=?").get(id), { data: audio.bytes });
+    assert.equal(store.createPublicQuoteRequest(raw, { ...audio, bytes: Buffer.from("replacement") }), id);
+    assert.deepEqual(db.prepare("SELECT data FROM quote_audio WHERE quote_id=?").get(id), { data: audio.bytes });
+    assert.throws(() => store.createPublicQuoteRequest({ ...raw, equipment_id: randomUUID(), request_key: randomUUID() }, audio));
+    assert.equal((db.prepare("SELECT count(*) AS n FROM quote_audio").get() as { n: number }).n, 1);
+  } finally { db.close(); }
 });

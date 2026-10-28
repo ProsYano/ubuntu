@@ -406,3 +406,44 @@
 .brand-logo{display:block;width:84px;height:auto;object-fit:contain}
 .brand-logo-footer{width:160px;max-width:100%}
 @media(max-width:800px){.site-header .brand-logo{width:68px}}
+
+/* Written and spoken project descriptions share the same visual priority. */
+.project-description { display: grid; gap: 10px; }
+.project-description > label { font-weight: 700; }
+.project-description > p { margin: 0; font-size: .9rem; color: #59615b; }
+.project-description > textarea { width: 100%; min-height: 150px; }
+.voice-description { padding: 20px; border: 1px solid #bfc9bb; border-radius: 12px; background: #f2f5ee; }
+.voice-description-heading { display: flex; gap: 12px; align-items: flex-start; }
+.voice-description-heading strong { display: block; color: #23342b; }
+.voice-description-heading p { margin: 6px 0 0; font-size: .9rem; line-height: 1.6; }
+.voice-mic { display: grid; place-items: center; flex: 0 0 42px; height: 42px; border-radius: 50%; color: #23342b; background: #e0e8d8; }
+.voice-description-actions { display: flex; flex-wrap: wrap; align-items: center; gap: 12px; margin-top: 16px; }
+.voice-description-actions > span { font-size: .8rem; line-height: 1.5; }
+.voice-description .voice-stop { background: #9d3029; color: white; }
+.voice-preview { display: flex; flex-wrap: wrap; align-items: center; gap: 12px; margin-top: 16px; }
+.voice-description audio { width: 100%; max-width: 360px; }
+.voice-preview .text-link { background: transparent; border: 0; cursor: pointer; font: inherit; }
+@media (max-width: 600px) { .voice-description { padding: 16px; } .voice-description-actions .button { width: 100%; white-space: normal; } }
+
+/* Consistent spacing from the description through the form footer. */
+.quote-form .project-description { gap: 8px; }
+.quote-form .project-description > label { margin: 0; }
+.quote-form .project-description > p { margin: 0; }
+.quote-form .project-description > textarea { margin: 4px 0 0; }
+.quote-form .project-description > .voice-description { margin-top: 12px; }
+.quote-form .voice-description-heading p { margin: 6px 0 0; }
+.quote-form .voice-description-actions { gap: 10px; }
+.quote-form .voice-description-actions > span { display: block; width: 100%; }
+.quote-form .voice-preview { gap: 12px; }
+.quote-form .voice-preview .text-link { padding: 0; line-height: 1.6; }
+.quote-form .admin-form > .button { margin-top: 24px; }
+.quote-form > .text-link { display: block; width: fit-content; max-width: 100%; margin: 24px auto 0; padding-bottom: 4px; text-align: center; line-height: 1.7; }
+@media (max-width: 600px) {
+  .quote-form .admin-form > .button { margin-top: 20px; }
+  .quote-form > .text-link { margin-top: 20px; }
+}
+
+.workspace-nav a { border-radius: 6px 6px 0 0; transition: background-color .15s, color .15s; }
+.workspace-nav a:hover { background: #f2eee5; color: var(--ink); }
+.workspace-nav a[aria-current=page] { background: #fff0bd; border-bottom-color: #a87300; color: #493821; font-weight: 700; }
+.workspace-nav a:focus-visible { outline: 2px solid #a87300; outline-offset: 3px; }

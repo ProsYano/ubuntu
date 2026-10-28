@@ -15,8 +15,8 @@ export function Hero() {
           <div><h1 className="text-white uppercase">Empowering Your Projects With Our <span className="text-[#ff8414]">Premium Machinery</span></h1></div>
           <div><p className="mt-5 max-w-[650px] text-white/90">Reliable heavy-duty equipment and professional rental solutions to keep your complex and demanding construction projects moving safely, efficiently, and successfully on schedule.</p></div>
           <div><div className="rentx-hero-actions mt-8 flex flex-wrap gap-4">
-            <Link href="/equipments" className="btn-primary">Explore Equipment <span className="rentx-arrow">↗</span></Link>
-            <Link href="/contact" className="rentx-outline-btn">Get a Quote <span className="rentx-arrow rentx-arrow-light">↗</span></Link>
+            <Link href="/equipments" className="btn-primary">Explore Equipment</Link>
+            <Link href="/contact" className="rentx-outline-btn">Get a Quote</Link>
           </div></div>
         </div>
         <Image src="/rentx-reference/asset-b2f49d8c0899fa18.png" alt="Heavy wheel loader" width={630} height={480} className="absolute bottom-[-24px] right-[-75px] z-10 hidden w-[630px] object-contain lg:block" />

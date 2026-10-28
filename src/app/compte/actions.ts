@@ -7,6 +7,7 @@ import { store } from "@/lib/server";
 import { actionError } from "@/lib/server/action-error";
 import { orderStatuses } from "@/lib/workflow-schema";
 import type { ActionState } from "@/lib/equipment-schema";
+import { readVoice } from "@/lib/server/voice";
 function refresh() { revalidatePath("/compte", "layout"); revalidatePath("/gestion", "layout"); }
 export async function createOrder(_state: ActionState, form: FormData): Promise<ActionState> {
   const { user } = await requireAccess(["client"]);
@@ -19,7 +20,9 @@ export async function createPublicQuote(_state: ActionState, form: FormData): Pr
   try {
     const raw = Object.fromEntries(form);
     await throttlePublic("quote", String(raw.email ?? "").trim().toLowerCase());
-    store().createPublicQuoteRequest(raw);
+    const audio = await readVoice(form.get("voice"));
+    if (audio && !String(raw.notes ?? "").trim()) raw.notes = "Besoin décrit dans le message vocal joint.";
+    store().createPublicQuoteRequest(raw, audio);
   } catch (error) { return actionError(error); }
   revalidatePath("/gestion/commandes");
   redirect("/contact?demande=envoyee#devis");

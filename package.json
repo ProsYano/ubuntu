@@ -14,9 +14,24 @@
     "db:backup": "node --import tsx scripts/backup.ts",
     "db:import": "node --import tsx scripts/import-catalogue.ts",
     "test:e2e": "playwright test",
-    "build:turbopack": "next build"
+    "build:turbopack": "next build",
+    "app:sync": "npx cap sync && npx cap sync @capawesome/capacitor-electron",
+    "app:open:android": "npx cap open android",
+    "app:open:ios": "npx cap open ios",
+    "app:run:android": "npx cap run android",
+    "app:run:ios": "npx cap run ios",
+    "app:run:desktop": "npx cap run @capawesome/capacitor-electron",
+    "app:apk": "scripts/android-gradle.sh assembleDebug",
+    "app:apk:release": "scripts/android-gradle.sh assembleRelease",
+    "app:aab": "scripts/android-gradle.sh bundleRelease",
+    "app:desktop:pack": "cd electron && npm run pack",
+    "postinstall": "cd electron && npm ci"
   },
   "dependencies": {
+    "@capacitor/android": "^8.5.3",
+    "@capacitor/core": "^8.5.3",
+    "@capacitor/ios": "^8.5.3",
+    "@capawesome/capacitor-electron": "^0.2.2",
     "better-sqlite3": "13.0.3",
     "clsx": "^2.1.1",
     "next": "16.3.3",
@@ -30,6 +45,7 @@
     "zod": "4.5.4"
   },
   "devDependencies": {
+    "@capacitor/cli": "^8.5.3",
     "@playwright/test": "1.63.0",
     "@tailwindcss/postcss": "^4",
     "@types/better-sqlite3": "9.6.0",

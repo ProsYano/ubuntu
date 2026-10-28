@@ -11,5 +11,5 @@ export function AccountLink() {
     check(); window.addEventListener("focus", check);
     return () => { controller.abort(); window.removeEventListener("focus", check); };
   }, [pathname]);
-  return <Link href={access.href} className="account-link">{access.connected ? "Mon espace ↗" : "Connexion"}</Link>;
+  return <Link href={access.href} className="account-link">{access.connected ? "Mon espace" : "Connexion"}</Link>;
 }

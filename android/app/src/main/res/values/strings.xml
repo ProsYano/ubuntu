@@ -1,0 +1,7 @@
+<?xml version='1.0' encoding='utf-8'?>
+<resources>
+    <string name="app_name">Ubuntu Location BTP</string>
+    <string name="title_activity_main">Ubuntu Location BTP</string>
+    <string name="package_name">com.ubilocation.btp</string>
+    <string name="custom_url_scheme">com.ubilocation.btp</string>
+</resources>

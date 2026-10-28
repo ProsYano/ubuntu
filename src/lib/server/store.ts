@@ -200,7 +200,7 @@ export class Store {
       this.audit(actor, `quote.${status}`, id);
     }).immediate();
   }
-  createPublicQuoteRequest(raw: unknown) {
+  createPublicQuoteRequest(raw: unknown, audio?: { bytes: Buffer; type: string }) {
     const input = publicQuoteSchema.parse(raw);
     return this.db.transaction(() => {
       const duplicate = this.db.prepare("SELECT id FROM quote_requests WHERE request_key = ?").get(input.request_key) as { id: string } | undefined;
@@ -210,6 +210,7 @@ export class Store {
       const id = randomUUID(), timestamp = now();
       this.db.prepare("INSERT INTO quote_requests(id,name,email,equipment_id,start_date,end_date,phone,company,location,notes,request_key,created_at) VALUES (?,?,?,?,?,?,?,?,?,?,?,?)").run(id, input.name, input.email, input.equipment_id, input.start_date, input.end_date, input.phone, input.company, input.location, input.notes, input.request_key, timestamp);
       this.db.prepare("UPDATE quote_requests SET updated_at=? WHERE id=?").run(timestamp,id);
+      if (audio) this.db.prepare("INSERT INTO quote_audio(quote_id,mime_type,data) VALUES (?,?,?)").run(id, audio.type, audio.bytes);
       this.db.prepare("INSERT INTO quote_events(quote_id,status,note,created_at) VALUES (?,'pending','Demande de location déposée.',?)").run(id,timestamp);
       return id;
     }).immediate();

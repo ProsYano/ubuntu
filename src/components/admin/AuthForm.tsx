@@ -17,8 +17,8 @@ export function AuthForm({ mode = "login", token = "", next = "/compte" }: { mod
     {newPassword && <label>Confirmer le mot de passe<input type="password" name="confirmation" autoComplete="new-password" required minLength={12} maxLength={128}/><small>Entre 12 et 128 caractères.</small></label>}
     {state.error && <p className="form-error" role="alert">{state.error}</p>}
     {state.success && <p className="form-success" role="status">{state.success}</p>}
-    <button className="button" disabled={pending}>{pending ? "Veuillez patienter…" : mode === "login" ? "Se connecter ↗" : mode === "register" ? "Créer mon compte client ↗" : "Enregistrer mon mot de passe"}</button>
-    {mode === "login" && <><Link href="/mot-de-passe-oublie">Mot de passe oublié ?</Link><Link className="text-link" href={`/inscription?next=${encodeURIComponent(next)}`}>Créer un compte client ↗</Link></>}
+    <button className="button" disabled={pending}>{pending ? "Veuillez patienter…" : mode === "login" ? "Se connecter" : mode === "register" ? "Créer mon compte client" : "Enregistrer mon mot de passe"}</button>
+    {mode === "login" && <><Link href="/mot-de-passe-oublie">Mot de passe oublié ?</Link><Link className="text-link" href={`/inscription?next=${encodeURIComponent(next)}`}>Créer un compte client</Link></>}
     {(mode === "register" || mode === "recovery") && <Link href={`/connexion?next=${encodeURIComponent(next)}`}>Retour à la connexion</Link>}
   </form>;
 }

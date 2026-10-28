@@ -1,0 +1,47 @@
+<!doctype html>
+<html lang="fr">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>Ubuntu Location BTP</title>
+    <link rel="icon" href="/icon.svg" />
+    <style>
+      body {
+        font-family: system-ui, -apple-system, "Segoe UI", sans-serif;
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        justify-content: center;
+        min-height: 100vh;
+        margin: 0;
+        background: #0f172a;
+        color: #f8fafc;
+        text-align: center;
+        padding: 24px;
+      }
+      h1 { font-size: 1.4rem; margin: 0 0 8px; }
+      p { max-width: 32rem; line-height: 1.6; color: #cbd5f5; }
+      code {
+        background: #1e293b;
+        border-radius: 6px;
+        padding: 2px 8px;
+      }
+      a { color: #7dd3fc; }
+    </style>
+  </head>
+  <body>
+    <main>
+      <h1>Ubuntu Location BTP</h1>
+      <p>
+        Ce dossier est le <strong>bundle web minimal</strong> embarqué par Capacitor.
+        En production la Webview charge directement le site hébergé&nbsp;:
+      </p>
+      <p><code>https://VOTRE-DOMAINE-PROD.com</code></p>
+      <p>
+        Si cet écran apparaît, vérifiez l'URL dans <code>apps.config.ts</code>
+        ou la variable <code>RENTX_APP_URL</code> de <code>.env.local</code>,
+        puis relancez <code>npm run app:sync</code>.
+      </p>
+    </main>
+  </body>
+</html>

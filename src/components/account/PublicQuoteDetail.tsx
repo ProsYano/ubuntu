@@ -1,9 +1,11 @@
+import { store } from "@/lib/server";
 import Link from "next/link";
 import { updatePublicQuote } from "@/app/compte/actions";
 import { displayDate, orderLabels, transitions, type OrderEvent, type PublicQuoteRequest } from "@/lib/workflow-schema";
 import { ActionForm } from "./ActionForm";
 
 export function PublicQuoteDetail({ quote, events }: { quote: PublicQuoteRequest; events: OrderEvent[] }) {
+  const hasAudio = Boolean(store().db.prepare("SELECT quote_id FROM quote_audio WHERE quote_id=?").get(quote.id));
   const options = transitions[quote.status];
   return <section className="section"><div className="wrap">
     <Link className="text-link" href="/gestion/commandes">← Toutes les demandes</Link>
@@ -27,12 +29,12 @@ export function PublicQuoteDetail({ quote, events }: { quote: PublicQuoteRequest
       <article className="editor-panel">
         <h2>La location demandée</h2>
         <dl className="workspace-facts">
-          <div><dt>Produit</dt><dd><Link href={`/gestion/engins/${quote.equipment_id}`}>{quote.equipment_name} — Voir la fiche ↗</Link></dd></div>
+          <div><dt>Produit</dt><dd><Link href={`/gestion/engins/${quote.equipment_id}`}>{quote.equipment_name} — Voir la fiche</Link></dd></div>
           <div><dt>Début de location</dt><dd>{displayDate(quote.start_date)}</dd></div>
           <div><dt>Fin de location</dt><dd>{displayDate(quote.end_date)}</dd></div>
           <div><dt>Lieu du chantier</dt><dd>{quote.location}</dd></div>
         </dl>
-        <h3>Besoin exprimé</h3><p className="preserve-lines">{quote.notes}</p>
+        <h3>Besoin exprimé</h3><p className="preserve-lines">{quote.notes}</p>{hasAudio && <div className="voice-description"><h3>Message vocal du demandeur</h3><audio controls preload="none" src={`/api/quotes/${quote.id}/audio`} aria-label="Message vocal du demandeur"/></div>}
       </article>
       <article className="editor-panel"><h2>Historique de la demande</h2>
         <ol className="order-history">{events.map(event => <li key={event.id}>

@@ -55,3 +55,19 @@ next-env.d.ts
 
 /test-results/
 /playwright-report/
+
+# Capacitor build outputs
+android/app/build/
+android/.gradle/
+android/build/
+android/local.properties
+ios/App/output/
+ios/App/public/
+**/*.ipa
+**/*.apk
+**/*.aab
+**/DerivedData/
+electron/dist/
+electron/node_modules/
+!electron/package-lock.json
+electron/app/

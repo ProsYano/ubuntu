@@ -9,7 +9,7 @@ export const sessionCookie = "rentx_session";
 export function homeFor(user: User) { return user.role === "agent" ? "/gestion/engins" : user.role === "admin" ? "/gestion/commandes" : "/compte"; }
 export async function getAccess() {
   const user = store().session((await cookies()).get(sessionCookie)?.value);
-  return user ? { user, isEditor: user.role === "agent", isAdmin: user.role === "admin" } : null;
+  return user ? { user, isEditor: user.role === "agent" || user.role === "admin", isAdmin: user.role === "admin" } : null;
 }
 export async function requireAccess(roles?: Role[]) {
   const access = await getAccess();

@@ -34,6 +34,7 @@ Héberger avec `npm run build` puis `npm start` sur **un serveur Node.js avec di
 
 - [Installation, comptes, migration et sauvegardes](docs/ACTIVATION.md)
 - [Référencement](docs/REFERENCEMENT.md)
+- [Génération des apps natives Android/iOS et du logiciel desktop](docs/CAPACITOR.md)
 
 ## Vérification
 

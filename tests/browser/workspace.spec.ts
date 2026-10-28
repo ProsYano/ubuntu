@@ -11,7 +11,7 @@ async function login(page: Page, email: string) {
   await page.goto("/connexion");
   await page.getByLabel("Adresse e-mail").fill(email);
   await page.locator('input[name="password"]').fill(password);
-  await page.getByRole("button", { name: "Se connecter ↗" }).click();
+  await page.getByRole("button", { name: "Se connecter" }).click();
   await expect(page).not.toHaveURL(/\/connexion/);
 }
 test.beforeAll(async () => {
@@ -53,13 +53,13 @@ test("agent catalogue lifecycle, client order, admin approval, private conversat
     expect((await outsider.request.get(imageSrc!)).status()).toBe(200);
     await client.goto(`/compte/commandes/nouvelle?engin=${equipmentId}`);
     await expect(client).toHaveURL(/\/connexion\?next=/);
-    await client.getByRole("link", { name: "Créer un compte client ↗" }).click();
+    await client.getByRole("link", { name: "Créer un compte client" }).click();
     const clientEmail = `client-${randomUUID()}@example.test`;
     await client.getByLabel("Nom et prénom").fill("Client du chantier");
     await client.getByLabel("Adresse e-mail").fill(clientEmail);
     await client.locator('input[name="password"]').fill(password);
     await client.getByLabel("Confirmer le mot de passe").fill(password);
-    await client.getByRole("button", { name: "Créer mon compte client ↗" }).click();
+    await client.getByRole("button", { name: "Créer mon compte client" }).click();
     await expect(client).toHaveURL(new RegExp(`/compte/commandes/nouvelle\\?engin=${equipmentId}`));
     await expect(client.getByLabel("Engin souhaité")).toHaveValue(equipmentId);
     const future = (days: number) => new Date(Date.now() + days * 86400000).toISOString().slice(0, 10);
@@ -67,7 +67,7 @@ test("agent catalogue lifecycle, client order, admin approval, private conversat
     await client.getByLabel("Téléphone", { exact: false }).fill("+242 060000000");
     await client.getByLabel("Lieu du chantier").fill("Brazzaville — chantier principal");
     await client.getByLabel("Décrivez votre besoin").fill("Préparer les fondations du chantier avec transport et opérateur.");
-    await client.getByRole("button", { name: "Envoyer ma demande de location ↗" }).click();
+    await client.getByRole("button", { name: "Envoyer ma demande de location" }).click();
     await expect(client.getByRole("heading", { name, exact: true })).toBeVisible();
     const orderId = new URL(client.url()).pathname.split("/").pop()!;
     await login(admin, adminEmail);
@@ -77,16 +77,16 @@ test("agent catalogue lifecycle, client order, admin approval, private conversat
     await admin.getByRole("button", { name: "Enregistrer le statut" }).click();
     await expect(admin.locator(".editor-heading .status-badge")).toHaveText("Acceptée");
     await client.reload(); await expect(client.locator(".editor-heading .status-badge")).toHaveText("Acceptée");
-    await client.getByRole("link", { name: "Ouvrir la conversation ↗" }).click();
+    await client.getByRole("link", { name: "Ouvrir la conversation" }).click();
     await expect(client).toHaveURL(/\/compte\/messages\/[a-f0-9-]{36}$/);
     const conversationId = new URL(client.url()).pathname.split("/").pop()!;
     await client.getByLabel("Votre message").fill("À quelle heure sera livré l’engin ?");
-    await client.getByRole("button", { name: "Envoyer le message ↗" }).click();
+    await client.getByRole("button", { name: "Envoyer le message" }).click();
     await expect(client.getByText("À quelle heure sera livré l’engin ?", { exact: true })).toBeVisible();
     await admin.goto(`/gestion/messages/${conversationId}`);
     await expect(admin.getByText("À quelle heure sera livré l’engin ?", { exact: true })).toBeVisible();
     await admin.getByLabel("Votre message").fill("La livraison est prévue à huit heures.");
-    await admin.getByRole("button", { name: "Envoyer le message ↗" }).click();
+    await admin.getByRole("button", { name: "Envoyer le message" }).click();
     await expect(admin.getByText("La livraison est prévue à huit heures.", { exact: true })).toBeVisible();
     await client.getByRole("button", { name: "Actualiser", exact: true }).click();
     await expect(client.getByText("La livraison est prévue à huit heures.", { exact: true })).toBeVisible();
@@ -100,7 +100,7 @@ test("agent catalogue lifecycle, client order, admin approval, private conversat
     await outsider.getByLabel("Nom et prénom").fill("Autre client");
     await outsider.getByLabel("Adresse e-mail").fill(`outsider-${randomUUID()}@example.test`);
     await outsider.locator('input[name="password"]').fill(password); await outsider.getByLabel("Confirmer le mot de passe").fill(password);
-    await outsider.getByRole("button", { name: "Créer mon compte client ↗" }).click(); await expect(outsider).toHaveURL(/\/compte$/);
+    await outsider.getByRole("button", { name: "Créer mon compte client" }).click(); await expect(outsider).toHaveURL(/\/compte$/);
     await outsider.goto(`/compte/commandes/${orderId}`); await expect(outsider.getByText("Préparer les fondations du chantier avec transport et opérateur.", { exact: true })).toHaveCount(0);
     await outsider.goto(`/compte/messages/${conversationId}`); await expect(outsider.getByText("La livraison est prévue à huit heures.", { exact: true })).toHaveCount(0);
     await agent.goto("/gestion/engins"); row = agent.locator("article").filter({ has: agent.getByRole("heading", { name, exact: true }) });
@@ -134,7 +134,7 @@ test("password change, recovery link and suspension revoke browser access", asyn
     await admin.getByText("Récupération du compte", { exact: true }).click();
     await admin.getByLabel("J’ai vérifié l’identité du titulaire.").check();
     await admin.getByRole("button", { name: "Créer un lien de récupération" }).click();
-    const link = admin.getByRole("link", { name: "Lien de récupération personnel ↗" });
+    const link = admin.getByRole("link", { name: "Lien de récupération personnel" });
     await expect(link).toBeVisible();
     const href = (await link.getAttribute("href"))!;
     await recovery.goto(href);
@@ -149,7 +149,7 @@ test("password change, recovery link and suspension revoke browser access", asyn
     await expect(admin.getByText("Client · Suspendu", { exact: true })).toBeVisible();
     await client.goto("/compte"); await expect(client).toHaveURL(/\/connexion/);
     await client.getByLabel("Adresse e-mail").fill(email); await client.locator('input[name="password"]').fill(password);
-    await client.getByRole("button", { name: "Se connecter ↗" }).click();
+    await client.getByRole("button", { name: "Se connecter" }).click();
     await expect(client.locator('.form-error[role="alert"]')).toContainText("incorrect");
     const result = await client.request.get("/api/auth/status");
     expect(result.headers()["cache-control"]).toContain("no-store");
@@ -168,7 +168,7 @@ test("visitor requests a selected product without login and admin sees the linke
   const notes = `L’engin d'Élodie & fils 🚜 <script>window.quoteInjected = true</script><img src=x onerror="window.quoteInjected = true">; DROP TABLE equipment; --`;
   try {
     await visitor.goto(`/equipments/${equipment.slug}`);
-    await visitor.getByRole("link", { name: "Demander un devis ↗", exact: true }).click();
+    await visitor.getByRole("link", { name: "Demander un devis", exact: true }).click();
     await expect(visitor).toHaveURL(/\/contact\?engin=/);
     await expect(visitor.getByLabel("Équipement recherché")).toHaveValue(equipment.id);
     const key = await visitor.locator('input[name="request_key"]').inputValue();
@@ -186,14 +186,14 @@ test("visitor requests a selected product without login and admin sees the linke
     await visitor.getByLabel("Début de location").fill(future(33));
     await expect(visitor.locator("#devis").getByRole("alert")).toContainText("date de début");
     expect(await visitor.locator("#devis form").evaluate((form: HTMLFormElement) => form.checkValidity())).toBe(false);
-    await visitor.getByRole("button", { name: "Envoyer ma demande ↗" }).click();
+    await visitor.getByRole("button", { name: "Envoyer ma demande" }).click();
     await expect(visitor).toHaveURL(/engin=/);
     await visitor.getByLabel("Début de location").fill(future(30));
     await visitor.getByLabel("Fin de location").fill(future(29));
     expect(await visitor.locator("#devis form").evaluate((form: HTMLFormElement) => form.checkValidity())).toBe(false);
     await visitor.getByLabel("Fin de location").fill(future(30));
     expect(await visitor.locator("#devis form").evaluate((form: HTMLFormElement) => form.checkValidity())).toBe(true);
-    await visitor.getByRole("button", { name: "Envoyer ma demande ↗" }).click();
+    await visitor.getByRole("button", { name: "Envoyer ma demande" }).click();
     await expect(visitor.getByRole("status")).toContainText("Votre demande a bien été envoyée");
     await login(admin, adminEmail);
     await admin.goto("/gestion/commandes");
@@ -203,7 +203,7 @@ test("visitor requests a selected product without login and admin sees the linke
     await expect(admin.getByText("Aucune commande dans cette vue.")).toHaveCount(0);
     await request.click();
     await expect(admin.getByRole("heading", { name: "Contact et entreprise" })).toBeVisible();
-    await expect(admin.getByRole("link", { name: `${equipment.name} — Voir la fiche ↗` })).toHaveAttribute("href", `/gestion/engins/${equipment.id}`);
+    await expect(admin.getByRole("link", { name: `${equipment.name} — Voir la fiche` })).toHaveAttribute("href", `/gestion/engins/${equipment.id}`);
     await expect(admin.locator("main")).toContainText("Chantier visiteur Brazzaville");
     await expect(admin.locator(".preserve-lines").first()).toHaveText(notes);
     await expect(admin.locator(".workspace-detail script, .workspace-detail img")).toHaveCount(0);
@@ -226,4 +226,29 @@ test("visitor requests a selected product without login and admin sees the linke
     await visitor.goto(new URL(detailUrl).pathname);
     await expect(visitor).toHaveURL(/connexion/);
   } finally { await visitorContext.close(); await adminContext.close(); }
+});
+
+test("admin can add equipment and workspace navigation identifies the current section", async ({ page }) => {
+  await login(page, adminEmail);
+  const nav = page.getByRole("navigation", { name: "Navigation de votre espace" });
+  await expect(nav.getByRole("link", { name: "Commandes", exact: true })).toHaveAttribute("aria-current", "page");
+  await nav.getByRole("link", { name: "Catalogue", exact: true }).click();
+  await expect(nav.getByRole("link", { name: "Catalogue", exact: true })).toHaveAttribute("aria-current", "page");
+  await page.getByRole("link", { name: "+ Ajouter un engin" }).click();
+  await expect(nav.getByRole("link", { name: "Catalogue", exact: true })).toHaveAttribute("aria-current", "page");
+  const name = `Engin administrateur ${randomUUID().slice(0, 8)}`;
+  await page.getByLabel("Nom de l’engin").fill(name);
+  await page.getByLabel("Présentation courte").fill("Un engin ajouté par l’administration pour les travaux de chantier.");
+  await page.getByLabel("Description détaillée").fill("Cet engin est destiné aux travaux de terrassement et aux interventions sur les chantiers de construction.");
+  await page.getByLabel("Choisir une image").setInputFiles({ name: "engin.png", mimeType: "image/png", buffer: await sharp({ create: { width: 120, height: 80, channels: 3, background: "#e9ad16" } }).png().toBuffer() });
+  await page.getByRole("button", { name: "Enregistrer l’engin" }).click();
+  const row = page.locator("article").filter({ has: page.getByRole("heading", { name, exact: true }) });
+  await row.getByRole("link", { name: "Modifier", exact: true }).click();
+  const imageSrc = await page.locator(".upload-preview img").getAttribute("src");
+  expect((await page.request.get(imageSrc!)).status()).toBe(200);
+  await expect(nav.locator('[aria-current="page"]')).toHaveText("Catalogue");
+  await nav.getByRole("link", { name: "Messages", exact: true }).click();
+  await expect(nav.locator('[aria-current="page"]')).toHaveText("Messages");
+  await nav.getByRole("link", { name: "Mot de passe", exact: true }).click();
+  await expect(nav.locator('[aria-current="page"]')).toHaveText("Mot de passe");
 });

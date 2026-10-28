@@ -14,7 +14,7 @@ export function openDatabase(filename = resolve(dataDirectory(), "rentx.db")) {
   db.pragma("busy_timeout = 5000");
   db.transaction(() => {
     const version = db.pragma("user_version", { simple: true }) as number;
-    if (version > 3) throw new Error("Cette base nécessite une version plus récente de l’application.");
+    if (version > 4) throw new Error("Cette base nécessite une version plus récente de l’application.");
       const tableCount = (db.prepare("SELECT count(*) AS count FROM sqlite_master WHERE type = 'table' AND name IN ('users', 'equipment')").get() as { count: number }).count;
       if (version >= 2) return;
       if (version === 1 || (version === 0 && tableCount > 0)) {
@@ -91,6 +91,11 @@ export function openDatabase(filename = resolve(dataDirectory(), "rentx.db")) {
       INSERT INTO quote_events(quote_id,status,note,created_at) SELECT id,'pending','Demande de location déposée.',created_at FROM quote_requests;
     `);
     db.pragma("user_version = 3");
+  }).immediate();
+  db.transaction(() => {
+    if ((db.pragma("user_version", { simple: true }) as number) >= 4) return;
+    db.exec("CREATE TABLE quote_audio (quote_id TEXT PRIMARY KEY REFERENCES quote_requests(id) ON DELETE CASCADE, mime_type TEXT NOT NULL, data BLOB NOT NULL)");
+    db.pragma("user_version = 4");
   }).immediate();
   return db;
 }

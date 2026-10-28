@@ -48,7 +48,7 @@ export function TrustSection() {
             </li>
           ))}
         </ul>
-        <p className="ministries-source">Présentation institutionnelle ; ces organismes ne sont pas présentés comme des clients ou partenaires confirmés. <a href="https://gouvernement.cg/liste-de-la-nouvelle-equipe-gouvernementale-publiee-le-24-avril-2026/" target="_blank" rel="noopener noreferrer">Source : Gouvernement du Congo ↗</a></p>
+        <p className="ministries-source">Présentation institutionnelle ; ces organismes ne sont pas présentés comme des clients ou partenaires confirmés. <a href="https://gouvernement.cg/liste-de-la-nouvelle-equipe-gouvernementale-publiee-le-24-avril-2026/" target="_blank" rel="noopener noreferrer">Source : Gouvernement du Congo</a></p>
         <div className="private-trust-block">
           <article className="trust-card trust-card-private">
             <div className="trust-card-top"><span className="trust-icon"><TrustIcon privateClient /></span><span className="trust-label">Secteur privé</span></div>
